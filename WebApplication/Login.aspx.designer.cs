@@ -69,12 +69,12 @@ namespace WebApplication
         protected global::System.Web.UI.WebControls.TextBox TextBox_password;
 
         /// <summary>
-        /// display_db control.
+        /// login_btn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button display_db;
+        protected global::System.Web.UI.WebControls.Button login_btn;
     }
 }

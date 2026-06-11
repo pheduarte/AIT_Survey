@@ -22,8 +22,11 @@
             <asp:TextBox ID="TextBox_password" runat="server"></asp:TextBox>
             <br />
             <br />
+            <asp:Button ID="login_btn" runat="server" Text="Login" onClick="check_credentials"/>
+            <br />
+            <br />
 
-            <asp:Button ID="display_db" runat="server" Text="Show Data" onClick="display_db_btn"/>
+           
         </div>
     </form>
 </body>

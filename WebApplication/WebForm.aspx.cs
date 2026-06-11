@@ -16,9 +16,19 @@ namespace WebApplication
         {
             String connectionStr = ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
 
-            DatabaseConnection(connectionStr);
-            LoadRoles(connectionStr);
-            LoadUsers(connectionStr);
+            if (!IsPostBack)
+            {
+                if (Session["userID"] == null)
+                {
+                    Response.Redirect("Login.aspx");
+                }
+
+                label_welcome.Text = "Welcome, " + Session["UserName"].ToString();
+
+                DatabaseConnection(connectionStr);
+                LoadRoles(connectionStr);
+                LoadUsers(connectionStr);
+            }
             
         }
 
@@ -40,7 +50,7 @@ namespace WebApplication
         }
 
         private void LoadRoles(String connectionStr) {
-            string query_roles = "SELECT roleID, position FROM roles";
+            string query_roles = "SELECT roleID, position FROM role";
 
             using (SqlConnection connection = new SqlConnection(connectionStr))
             {
@@ -59,8 +69,8 @@ namespace WebApplication
         private void LoadUsers(String connectionStr)
         {
 
-            string query_users = "SELECT u.userID, r.position AS Role, u.given_name AS FirstName, u.last_name AS LastName, u.email FROM " +
-                "users u INNER JOIN roles r ON u.roleID = r.roleID";
+            string query_users = "SELECT u.staffID, r.roleID AS Role, u.given_name AS FirstName, u.last_name AS LastName, u.email FROM " +
+                "staff u INNER JOIN role r ON u.roleID = r.roleID";
 
             using (SqlConnection connection = new SqlConnection(connectionStr))
             {
