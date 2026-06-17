@@ -36,12 +36,12 @@ namespace WebApplication
             string title = "";
             string given_name = txtRespondentID_given_name.Text;
             string last_name = TextBox6.Text;
-            string age_range = TextBox2.Text;
+            string age_range = AgeRange.SelectedValue;
             string gender = "M";
             string DOB = TextBox8.Text;
             string email = TextBox1.Text;
             string phone_number = TextBox7.Text;
-            string state_territory = TextBox3.Text;
+            string state_territory = StateTerritoryRadio.SelectedValue;
             string suburb = TextBox4.Text;
             string postcode = TextBox5.Text;
             bool is_member = false;

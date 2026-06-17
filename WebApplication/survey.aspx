@@ -31,47 +31,67 @@
             <br />
             <br />
             <asp:Label ID="Label2" runat="server" Text="Age:* "></asp:Label>
-            <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+            <asp:RadioButtonList ID="AgeRange" runat="server"
+                AutoPostBack="true">
+
+                <asp:ListItem Text="18-24 years old" Value="18-24"></asp:ListItem>
+                <asp:ListItem Text="25-35 years old" Value="25-35"></asp:ListItem>
+                <asp:ListItem Text="36-50 years old" Value="36-50"></asp:ListItem>
+                <asp:ListItem Text="51-65 years old" Value="51-65"></asp:ListItem>
+                <asp:ListItem Text="66 years old or older" Value="66+"></asp:ListItem>
+            </asp:RadioButtonList>
 
             <%--Required field--%>
-<asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="TextBox2"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+            <asp:RequiredFieldValidator
+             runat="server"
+              ControlToValidate="AgeRange"
+              ErrorMessage="Field required"
+              ForeColor="Red" />
             <br />
             <br />
+      
             <asp:Label ID="Label3" runat="server" Text="State / Territory:* "></asp:Label>
-            <asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>
+            <asp:RadioButtonList ID="StateTerritoryRadio" runat="server"
+            AutoPostBack="true">
 
-                        <%--Required field--%>
-<asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="TextBox3"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+              <asp:ListItem Text="NSW" Value="NSW"></asp:ListItem>
+                 <asp:ListItem Text="VIC" Value="VIC"></asp:ListItem>
+                <asp:ListItem Text="QLD" Value="QLD"></asp:ListItem>
+                <asp:ListItem Text="WA" Value="WA"></asp:ListItem>
+                <asp:ListItem Text="SA" Value="SA"></asp:ListItem>
+                <asp:ListItem Text="TAS" Value="TAS"></asp:ListItem>
+                <asp:ListItem Text="ACT" Value="ACT"></asp:ListItem>
+                <asp:ListItem Text="NT" Value="NT"></asp:ListItem>
+            </asp:RadioButtonList>
+
+           <%--Required field--%>
+            <asp:RequiredFieldValidator
+            runat="server"
+            ControlToValidate="StateTerritoryRadio"
+             ErrorMessage="Field required"
+             ForeColor="Red" />
             <br />
             <br />
             <asp:Label ID="Label4" runat="server" Text="Suburb:* "></asp:Label>
             <asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>
 
-                        <%--Required field--%>
-<asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="TextBox4"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+           <%--Required field--%>
+            <asp:RequiredFieldValidator
+            runat="server"
+             ControlToValidate="TextBox4"
+             ErrorMessage="Field required"
+             ForeColor="Red" />
             <br />
             <br />
             <asp:Label ID="Label5" runat="server" Text="Postcode:* "></asp:Label>
             <asp:TextBox ID="TextBox5" runat="server"></asp:TextBox>
 
                         <%--Required field--%>
-<asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="TextBox5"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+            <asp:RequiredFieldValidator
+            runat="server"
+            ControlToValidate="TextBox5"
+             ErrorMessage="Field required"
+             ForeColor="Red" />
             <br />
             <br />
 
@@ -86,10 +106,10 @@
             </asp:RadioButtonList>
 
             <asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="rblRespondent"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+             runat="server"
+            ControlToValidate="rblRespondent"
+            ErrorMessage="Field required"
+             ForeColor="Red" />
 
             <br />
 
@@ -99,11 +119,11 @@
                 <asp:TextBox ID="txtRespondentID_given_name" runat="server" />
 
                             <%--Required field--%>
-<asp:RequiredFieldValidator
-     runat="server"
-     ControlToValidate="txtRespondentID_given_name"
-     ErrorMessage="Field required"
-     ForeColor="Red" />
+            <asp:RequiredFieldValidator
+              runat="server"
+              ControlToValidate="txtRespondentID_given_name"
+              ErrorMessage="Field required"
+              ForeColor="Red" />
                 <br />
                 <br />
                 <asp:Label ID="Label7" runat="server" Text="Last Name:* " />
