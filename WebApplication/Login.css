@@ -1,0 +1,13 @@
+﻿
+
+.wrong_credentials {
+    color: red;
+    align-self: center;
+}
+
+.textBox {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-self: center;
+}

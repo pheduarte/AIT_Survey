@@ -5,11 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Thank you!</title>
+
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:Label ID="Label1" runat="server" Text="Thank you for taking the survey!"></asp:Label>
+        <div class="border">
+            <asp:Label ID="Label1" runat="server" Text="Thank you for taking the survey!" CssClass="h1"></asp:Label>
         </div>
     </form>
 </body>
