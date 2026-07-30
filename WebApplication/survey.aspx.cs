@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -24,69 +25,20 @@ namespace WebApplication
             {
                 Response.Redirect("survey_finished.aspx");
             }
-
-            if (!IsPostBack)
-            {
-                LoadServices();
-                LoadInsuranceProviders();
-                LoadDischargePlan();
-                LoadRoomType();
-                LoadInRoomService();
-                LoadWifiService();
-            }
-
-            pnlRespondentDetails.Visible = rblRespondent.SelectedValue == "Yes";
-            PanelAttendedRehab.Visible = RadioBtnAttendedRehabOP.SelectedValue == "Yes";
-            
-            
+ 
         }
 
-        protected void rblRespondent_SelectedIndexChanged(object sender, EventArgs e)
+        protected void Page_Init(object sender, EventArgs e)
         {
-            pnlRespondentDetails.Visible = rblRespondent.SelectedValue == "Yes";
+            LoadQuestions();
         }
 
-        protected void radioAttendedRehabOP_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PanelAttendedRehab.Visible = RadioBtnAttendedRehabOP.SelectedValue == "Yes";
-        }
-
-        protected void radioRoomTypeService_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PanelInRoomService.Visible = radioRoomType.SelectedItem.Text == "Public Single Room"
-                || radioRoomType.SelectedItem.Text == "Private Room";
-        }
-
-        protected void radioWifiService_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PanelWifiService.Visible =
-            CheckInRoomServices.Items
-                .Cast<ListItem>()
-                .Any(item => item.Selected && item.Text == "Wi-Fi");
-        }
 
         protected void submit_form(object sender, EventArgs e)
         {
-
+            /*
             if (!Page.IsValid)
             {
-                return;
-            }
-
-            // Controls how many providers users can select
-            int selectedInsuranceCount = 0;
-
-            foreach (ListItem item in cblInsuranceProviders.Items)
-            {
-                if (item.Selected)
-                {
-                    selectedInsuranceCount++;
-                }
-            }
-
-            if (selectedInsuranceCount > 2)
-            {
-                lbMessage.Text = "Please select a maximum of 2 insurance providers.";
                 return;
             }
 
@@ -151,27 +103,9 @@ namespace WebApplication
 
                     }
 
-                    // Inserts in db each Insurance Provider user selected (max 2)
-                    foreach (ListItem item in cblInsuranceProviders.Items)
-                    {
-                        if (item.Selected)
-                        {
-                            string insertInsuranceSql = @"
-                             INSERT INTO respondent_insurance
-                             (respondentID, insuranceProviderID)
-                            VALUES
-                            (@respondentID, @insuranceProviderID);
-                            ";
-
-                            using (SqlCommand cmd = new SqlCommand(insertInsuranceSql, connection))
-                            {
-                                cmd.Parameters.AddWithValue("@respondentID", respondentID);
-                                cmd.Parameters.AddWithValue("@insuranceProviderID", item.Value);
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                }
+                    //Insert values to respective tables in db
+                    
+                }   
 
             }
             catch (Exception ex)
@@ -183,166 +117,149 @@ namespace WebApplication
             Session["SurveyCompleted"] = true;
 
             Response.Redirect("survey_finished.aspx");
+
+            */
         }
 
-        private void LoadServices()
-        {
-            string connectionStr =
-                ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
 
-            using (SqlConnection conn = new SqlConnection(connectionStr))
-            {
-                conn.Open();
-
-                string sql = @"
-            SELECT serviceID,
-                   service_name
-            FROM service_type
-            ORDER BY service_name";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    CheckServices.DataSource = reader;
-                    CheckServices.DataTextField = "service_name";
-                    CheckServices.DataValueField = "serviceID";
-                    CheckServices.DataBind();
-                }
-            }
-        }
-
-        private void LoadInsuranceProviders()
-        {
-            string connectionStr =
-                ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connectionStr))
-            {
-                conn.Open();
-
-                string sql = @"
-            SELECT insuranceProviderID,
-                   insurance_name
-            FROM insurance_provider
-            ORDER BY insurance_name";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    cblInsuranceProviders.DataSource = reader;
-                    cblInsuranceProviders.DataTextField = "insurance_name";
-                    cblInsuranceProviders.DataValueField = "insuranceProviderID";
-                    cblInsuranceProviders.DataBind();
-                }
-            }
-        }
-
-        private void LoadDischargePlan()
-        {
-            string connectionStr =
-                ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connectionStr))
-            {
-                conn.Open();
-
-                string sql = @"
-                SELECT dischargePlanID, plan_name
-                FROM discharge_plan
-                ORDER BY plan_name";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    cblDischargePlan.DataSource = reader;
-                    cblDischargePlan.DataTextField = "plan_name";
-                    cblDischargePlan.DataValueField = "dischargePlanID";
-                    cblDischargePlan.DataBind();
-                }
-            }
-
-        }
-
-        private void LoadRoomType() 
+        private DataTable GetQuestions()
         {
             string connectionStr =
               ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
 
-            using (SqlConnection conn = new SqlConnection(connectionStr))
+            const string query = @"
+        SELECT
+            questionID,
+            question_text,
+            answer_type
+        FROM question
+        WHERE is_active = 1 AND is_main_question = 1
+        ORDER BY display_order;";
+
+            using (SqlConnection connection = new SqlConnection(connectionStr))
+            using (SqlCommand command = new SqlCommand(query, connection))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
             {
-                conn.Open();
-
-                string sql = @"
-                SELECT roomTypeID, room_type_name
-                FROM room_type
-                ORDER BY room_type_name";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    radioRoomType.DataSource = reader;
-                    radioRoomType.DataTextField = "room_type_name";
-                    radioRoomType.DataValueField = "roomTypeID";
-                    radioRoomType.DataBind();
-                }
+                DataTable questions = new DataTable();
+                adapter.Fill(questions);
+                return questions;
             }
-
-
         }
 
-        private void LoadInRoomService()
+   
+
+        private void LoadQuestions()
+        {
+            questions_rep.DataSource = GetQuestions();
+            questions_rep.DataBind();
+        }
+
+        private DataTable GetAnswerOptions(int questionID)
         {
             string connectionStr =
               ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
 
+            const string sql = @"
+        SELECT
+            answer_optionID,
+            questionID,
+            option_text
+        FROM answer_option
+        WHERE questionID=@questionID
+        ORDER BY answer_optionID";
+
             using (SqlConnection conn = new SqlConnection(connectionStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
-                conn.Open();
+                cmd.Parameters.Add(
+                    "@questionID",
+                    SqlDbType.Int
+                ).Value = questionID;
 
-                string sql = @"
-                SELECT inRoomServiceID, service_name
-                FROM inRoom_service";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    CheckInRoomServices.DataSource = reader;
-                    CheckInRoomServices.DataTextField = "service_name";
-                    CheckInRoomServices.DataValueField = "inRoomServiceID";
-                    CheckInRoomServices.DataBind();
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    return dt;
                 }
             }
         }
 
-        private void LoadWifiService()
+
+        protected void rptQuestions_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
-            string connectionStr =
-              ConfigurationManager.ConnectionStrings["devConnectionStr"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connectionStr))
+            if (e.Item.ItemType != ListItemType.Item &&
+                e.Item.ItemType != ListItemType.AlternatingItem)
             {
-                conn.Open();
+                return;
+            }
 
-                string sql = @"
-                SELECT wifiServiceID, service_name
-                FROM wifi_service
-                ORDER BY service_name";
+            DataRowView row = (DataRowView)e.Item.DataItem;
 
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+            int questionID = Convert.ToInt32(row["questionID"]);
+            string answerType = row["answer_type"].ToString();
+
+            PlaceHolder placeHolder = (PlaceHolder)e.Item.FindControl("answerPlaceholder");
+
+            DataTable options = GetAnswerOptions(questionID);
+
+            if (answerType == "radio")
+            {
+                RadioButtonList radioList = new RadioButtonList
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    ID = $"answer_{questionID}",
+                    CssClass = "form-check"
+                };
 
-                    CheckWiFiService.DataSource = reader;
-                    CheckWiFiService.DataTextField = "service_name";
-                    CheckWiFiService.DataValueField = "wifiServiceID";
-                    CheckWiFiService.DataBind();
-                }
+                radioList.DataSource = options;
+                radioList.DataTextField = "option_text";
+                radioList.DataValueField = "answer_optionID";
+                radioList.DataBind();
+
+                placeHolder.Controls.Add(radioList);
+            }
+            else if (answerType == "dropdown")
+            {
+                DropDownList dropdown = new DropDownList()
+                {
+                    ID = $"answer_{questionID}",
+                    CssClass = "form-control"
+                };
+
+                dropdown.DataSource = options;
+                dropdown.DataTextField = "option_text";
+                dropdown.DataValueField = "answer_optionID";
+                dropdown.DataBind();
+
+                placeHolder.Controls.Add(dropdown);
+            }
+            else if (answerType == "text")
+            {
+                TextBox textBox = new TextBox
+                {
+                    ID = $"answer_{questionID}",
+                    CssClass = "form-control"
+                };
+                placeHolder.Controls.Add(textBox);
+            }
+            else if (answerType == "check")
+            {
+                CheckBoxList checkbox = new CheckBoxList
+                {
+                    ID = $"answer_{questionID}",
+                    CssClass = "form-control"
+                };
+
+                checkbox.DataSource = options;
+                checkbox.DataTextField = "option_text";
+                checkbox.DataValueField = "answer_optionID";
+                checkbox.DataBind();
+
+                placeHolder.Controls.Add(checkbox);
             }
         }
+
+       
+
     }
 }
