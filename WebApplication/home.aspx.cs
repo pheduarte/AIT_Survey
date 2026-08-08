@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace WebApplication
 {
-    public partial class Login : System.Web.UI.Page
+    public partial class home : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -31,10 +31,10 @@ namespace WebApplication
                     conn.Open();
 
                     string query = @"
-                        SELECT staffUserID, given_name, email, roleID
-                        FROM staff_user
-                        WHERE email = @Email
-                        AND password = @Password";
+            SELECT staffUserID, given_name, email, roleID
+            FROM staff_user
+            WHERE email = @Email
+            AND password = @Password";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -55,11 +55,12 @@ namespace WebApplication
                                 if (roleID == 1)
                                 {
                                     Response.Redirect("WebForm.aspx");
-                                } else
-                                {                                  
+                                }
+                                else
+                                {
                                     Response.Redirect("StaffPanel.aspx");
                                 }
-                            } 
+                            }
                             else
                             {
                                 label_title_login.Text = "Invalid email or password.";
@@ -69,10 +70,21 @@ namespace WebApplication
                 }
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 label_title_login.Text = "Something went wrong while logging in.";
                 Console.WriteLine("Exception: " + ex.StackTrace);
             }
+        }
+
+        protected void check_credentials(object sender, EventArgs e)
+        {
+            CheckCredentials();
+        }
+
+        protected void Btn_register_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("register.aspx");
         }
     }
 }
